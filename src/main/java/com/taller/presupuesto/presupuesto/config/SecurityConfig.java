@@ -1,10 +1,13 @@
 package com.taller.presupuesto.presupuesto.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.server.WebFilter;
@@ -25,15 +28,15 @@ public class SecurityConfig {
 
     @Bean
     public WebFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true); // Permite credenciales
-        config.addAllowedOrigin("*"); // Permite todos los orígenes (cambia esto en producción)
-        config.addAllowedHeader("*"); // Permite todos los encabezados
-        config.addAllowedMethod("*"); // Permite todos los métodos (GET, POST, etc.)
+       CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.setAllowedOrigins(List.of("http://localhost:5173")); // Permite solo el frontend
+        corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfig.setAllowedHeaders(List.of("*"));
+        corsConfig.setAllowCredentials(true); // Permite cookies y autenticación
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Aplica la configuración a todas las rutas
+        source.registerCorsConfiguration("/**", corsConfig);
 
-        return new CorsWebFilter(source);
+        return new CorsWebFilter((CorsConfigurationSource) source);
     }
 }
